@@ -5,7 +5,9 @@
 /public/storage
 /storage/*.key
 /storage/pail
+/storage/oauth-keys
 /vendor
+.rnd
 .env
 .env.backup
 .env.production
