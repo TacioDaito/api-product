@@ -25,7 +25,7 @@ class AppServiceProvider extends ServiceProvider
     {
         Passport::loadKeysFrom(storage_path('oauth-keys'));
         RateLimiter::for('api', function (Request $request) {
-            return Limit::perMinute(60)->by($request->input('client_id')?: $request->ip());
+            return Limit::perMinute(20)->by($request->input('client_id')?: $request->ip());
         });
     }
 }

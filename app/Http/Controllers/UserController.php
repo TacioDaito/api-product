@@ -21,12 +21,18 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
-        ]);
-        $user = User::create($validatedData);
-        return response()->json($user, 201);
+        try {
+            $validatedData = $request->validate([
+                'name' => 'required|string|max:255',
+                'email' => 'required|email|max:255',
+                'client_id' => 'required|string|max:255',
+            ]);
+            $user = User::create($validatedData);
+            return response()->json($user, 201);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'User creation failed',
+                'error' => $e->getMessage()], 500);
+        }
     }
 
     /**
@@ -34,14 +40,21 @@ class UserController extends Controller
      */
     public function show(Request $request)
     {
-        $validatedData = $request->validate([
-            'email' => 'required|email|max:255',
-        ]);
-        $user = User::where('email', $validatedData['email'])->first();
-        if ($user) {
-            return response()->json($user);
-        } else {
-            return response()->json(['message' => 'User not found'], 404);
+        try {
+            $validatedData = $request->validate([
+                'email' => 'required|email|max:255',
+                'client_id' => 'required|string|max:255',
+            ]);
+            $user = User::where('email', $validatedData['email'])
+                ->where('client_id', $validatedData['client_id'])->first();
+            if ($user) {
+                return response()->json($user);
+            } else {
+                return response()->json(['message' => 'User not found'], 404);
+            }
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'User retrieval failed',
+                'error' => $e->getMessage()], 500);
         }
     }
 
@@ -50,16 +63,22 @@ class UserController extends Controller
      */
     public function update(Request $request)
     {
-        $validatedData = $request->validate([
-            'email' => 'required|email|max:255',
-            'name' => 'sometimes|string|max:255',
-        ]);
-        $user = User::where('email', $validatedData['email'])->first();
-        if ($user) {
-            $user->update($validatedData);
-            return response()->json($user);
-        } else {
-            return response()->json(['message' => 'User not found'], 404);
+        try {
+            $validatedData = $request->validate([
+                'email' => 'required|email|max:255',
+                'name' => 'sometimes|string|max:255',
+            ]);
+            $user = User::where('email', $validatedData['email'])
+                ->where('client_id', $validatedData['client_id'])->first();
+            if ($user) {
+                $user->update($validatedData);
+                return response()->json($user);
+            } else {
+                return response()->json(['message' => 'User not found'], 404);
+            }
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'User update failed',
+                'error' => $e->getMessage()], 500);
         }
     }
 
@@ -68,15 +87,21 @@ class UserController extends Controller
      */
     public function destroy(Request $request)
     {
-        $validatedData = $request->validate([
+        try {
+            $validatedData = $request->validate([
             'email' => 'required|email|max:255',
-        ]);
-        $user = User::where('email', $validatedData['email'])->first();
-        if ($user) {
-            $user->delete();
-            return response()->json(['message' => 'User deleted successfully']);
-        } else {
-            return response()->json(['message' => 'User not found'], 404);
+            ]);
+            $user = User::where('email', $validatedData['email'])
+                ->where('client_id', $validatedData['client_id'])->first();
+            if ($user) {
+                $user->delete();
+                return response()->json(['message' => 'User deleted successfully']);
+            } else {
+                return response()->json(['message' => 'User not found'], 404);
+            }
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'User deletion failed',
+                'error' => $e->getMessage()], 500);
         }
     }
 }
