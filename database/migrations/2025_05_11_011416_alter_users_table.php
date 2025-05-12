@@ -15,8 +15,8 @@ return new class extends Migration
             if (Schema::hasColumn('users', 'password')) {
                 $table->dropColumn('password');
             }
-            if (!Schema::hasColumn('users', 'client_id')) {
-                $table->string('client_id')->after('email');
+            if (!Schema::hasColumn('users', 'clientid')) {
+                $table->string('clientid')->after('email');
             }
         });
     }
